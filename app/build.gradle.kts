@@ -79,4 +79,7 @@ dependencies {
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // Coil?
+    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
 }
