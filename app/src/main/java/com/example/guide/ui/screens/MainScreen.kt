@@ -34,7 +34,10 @@ object MainDestination : NavigationDestination {
 }
 
 @Composable
-fun MainScreen(navController: NavHostController, viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun MainScreen(navigateBack: () -> Unit,
+               navigateToProfile: () -> Unit,
+               navigateToSearch: () -> Unit,
+               viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -137,7 +140,8 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel = view
             Spacer(modifier = Modifier.height(16.dp))
         }
         BottomNavigationBar(
-            navController,
+            navigateToProfile,
+            navigateToSearch,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -168,8 +172,9 @@ fun SearchBar(
 // Bottom Navigation Bar Function
 @Composable
 fun BottomNavigationBar(
-        navController: NavController, // Pass NavController for navigation
-        modifier: Modifier = Modifier
+    navigateToProfile: () -> Unit,
+    navigateToSearch: () -> Unit, // Pass NavController for navigation
+    modifier: Modifier = Modifier
     ) {
         var selectedIndex by remember { mutableStateOf(0) }
 
@@ -209,9 +214,8 @@ fun BottomNavigationBar(
                     onClick = {
                         selectedIndex = index
                         when (label) {
-                            "Home" -> navController.navigate("home")
-                            "Search" -> navController.navigate("search")
-                            "Profile" -> navController.navigate("profile")
+                            "Search" -> navigateToSearch
+                            "Profile" -> navigateToProfile
                         }
                     }
                 )
@@ -245,7 +249,22 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewMainScreen() {
-    val navController = rememberNavController()
+    val navigateToProfile: () -> Unit = {
+        println("Navigate to Profile") // Simulate navigation (logging for preview)
+    }
+
+    val navigateToSearch: () -> Unit = {
+        println("Navigate to Search") // Simulate navigation (logging for preview)
+    }
+
+    // Mocked navigation function for navigating back (no-op for preview)
+    val navigateBack: () -> Unit = {
+        println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
+    }
     val viewModel = MainViewModel()
-    MainScreen(navController, viewModel)
+
+    MainScreen(navigateBack,
+            navigateToProfile,
+            navigateToSearch,
+            viewModel)
 }

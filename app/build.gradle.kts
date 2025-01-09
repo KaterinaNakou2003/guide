@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("kotlin-kapt")
 }
 
 android {
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material.icons.extended)
+
     //Room
     implementation(libs.androidx.room.runtime.v261)
     implementation(libs.androidx.room.common)

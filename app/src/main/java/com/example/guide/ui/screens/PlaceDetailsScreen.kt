@@ -6,9 +6,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.guide.ui.AppViewModelProvider
 
 @Composable
-fun PlaceDetailsScreen(placeId: String, viewModel: PlaceDetailsViewModel = viewModel()) {
+fun PlaceDetailsScreen(placeId: String, viewModel: PlaceDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = placeId) {
