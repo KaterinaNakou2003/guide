@@ -22,13 +22,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.guide.data.FakeUsersRepository
+import com.example.guide.ui.AppViewModelProvider
+import com.example.guide.ui.navigation.NavigationDestination
+
+object ForgotPasswordDestination : NavigationDestination {
+    override val route = "forgotpassword"
+}
 
 @Composable
-fun ForgotPasswordScreen(navController: NavHostController, viewModel: ForgotPasswordViewModel = viewModel()) {
+fun ForgotPasswordScreen(navigateBack: () -> Unit,  // Navigate back to the previous screen
+                         navigateToMain: (Int) -> Unit,  // Function to navigate to MainScreen with the id
+                         viewModel: ForgotPasswordViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     Scaffold(
         topBar = {
             Row(
@@ -88,7 +95,7 @@ fun ForgotPasswordScreen(navController: NavHostController, viewModel: ForgotPass
             // Password Reset Button
             Button(
                 onClick = {
-                    viewModel.onResetPassword(navController)
+                    viewModel.onResetPassword(navigateToMain)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -105,7 +112,19 @@ fun ForgotPasswordScreen(navController: NavHostController, viewModel: ForgotPass
 @Composable
 fun PreviewForgotPasswordScreen() {
     val navController = rememberNavController()
-    val fakeRepository = FakeUsersRepository() // Replace with your mock repo
+    val fakeRepository = FakeUsersRepository() //mock repo
+
+    // Implementing mocked navigation functions for the preview
+    val navigateToMain: (Int) -> Unit = { id ->
+        println("Navigate to Main with id: $id") // Simulate navigation (logging for preview)
+    }
+
+    // Mocked navigation function for navigating back (no-op for preview)
+    val navigateBack: () -> Unit = {
+        println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
+    }
     val viewModel = ForgotPasswordViewModel(fakeRepository)
-    ForgotPasswordScreen(navController, viewModel)
+    ForgotPasswordScreen(navigateBack,  // Navigate back to the previous screen
+                        navigateToMain,  // Function to navigate to MainScreen with the id
+                        viewModel)
 }

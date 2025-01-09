@@ -31,16 +31,23 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.navigation.compose.rememberNavController
 import com.example.guide.data.FakeUsersRepository
+import com.example.guide.ui.AppViewModelProvider
+import com.example.guide.ui.navigation.NavigationDestination
+
+object SignUpDestination : NavigationDestination {
+    override val route: String = "signup"
+}
 
 @Composable
-fun SignUpScreen(navController: NavHostController, viewModel: SignUpViewModel = viewModel()) {
+fun SignUpScreen(navigateBack: () -> Unit,  // Navigate back to the previous screen
+                 navigateToMain: (Int) -> Unit,  // Function to navigate to MainScreen with the id
+                 viewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     Scaffold(
         topBar = {
             Row(
@@ -128,7 +135,7 @@ fun SignUpScreen(navController: NavHostController, viewModel: SignUpViewModel = 
             // Sign-Up Button
             Button(
                 onClick = {
-                    viewModel.onSignUpClicked(navController)
+                    viewModel.onSignUpClicked(navigateToMain)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -143,8 +150,19 @@ fun SignUpScreen(navController: NavHostController, viewModel: SignUpViewModel = 
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
-    val navController = rememberNavController()
     val fakeRepository = FakeUsersRepository() // Replace with your mock repo
     val viewModel = SignUpViewModel(fakeRepository)
-    SignUpScreen(navController, viewModel)
+
+    // Implementing mocked navigation functions for the preview
+    val navigateToMain: (Int) -> Unit = { id ->
+        println("Navigate to Main with id: $id") // Simulate navigation (logging for preview)
+    }
+
+    // Mocked navigation function for navigating back (no-op for preview)
+    val navigateBack: () -> Unit = {
+        println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
+    }
+    SignUpScreen(navigateBack,  // Navigate back to the previous screen
+                navigateToMain,  // Function to navigate to MainScreen with the id
+                viewModel)
 }

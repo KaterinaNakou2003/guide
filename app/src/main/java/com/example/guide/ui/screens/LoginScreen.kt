@@ -36,16 +36,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.navigation.compose.rememberNavController
 import com.example.guide.data.FakeUsersRepository
+import com.example.guide.ui.AppViewModelProvider
+import com.example.guide.ui.navigation.NavigationDestination
+
+object LoginDestination : NavigationDestination {
+        override val route = "login"
+}
 
 @Composable
-fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(
+    navigateBack: () -> Unit,
+    navigateToMain: (Int) -> Unit,  // Function to navigate to MainScreen with the id
+    navigateToForgotPassword: () -> Unit, // Function to navigate to Forgot Password screen
+    navigateToSignUp: () -> Unit, // Function to navigate to Sign Up screen
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     Scaffold(
         topBar = {
             Row(
@@ -134,7 +144,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = vi
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.clickable {
-                        navController.navigate("ForgotPasswordActivity")
+                        navigateToForgotPassword()
                     }
                 )
             }
@@ -144,7 +154,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = vi
             // Login Button
             Button(
                 onClick = {
-                    viewModel.onLoginClicked(navController)
+                    viewModel.onLoginClicked(navigateToMain)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -165,7 +175,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = vi
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.clickable {
-                    navController.navigate("SignupActivity")
+                    navigateToSignUp()
                 }
             )
         }
@@ -175,8 +185,33 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = vi
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
-    val navController = rememberNavController()
-    val fakeRepository = FakeUsersRepository() // Replace with your mock repo
+    val fakeRepository = FakeUsersRepository() //mock repo
     val viewModel = LoginViewModel(fakeRepository)
-    LoginScreen(navController, viewModel)
+
+    // Implementing mocked navigation functions for the preview
+    val navigateToMain: (Int) -> Unit = { id ->
+        println("Navigate to Main with id: $id") // Simulate navigation (logging for preview)
+    }
+
+    val navigateToForgotPassword: () -> Unit = {
+        println("Navigate to Forgot Password") // Simulate navigation
+    }
+
+    val navigateToSignUp: () -> Unit = {
+        println("Navigate to Sign Up") // Simulate navigation
+    }
+
+    // Mocked navigation function for navigating back (no-op for preview)
+    val navigateBack: () -> Unit = {
+        println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
+    }
+
+    // LoginScreen Composable
+    LoginScreen(
+        navigateBack = navigateBack,
+        navigateToMain = navigateToMain,
+        navigateToForgotPassword = navigateToForgotPassword,
+        navigateToSignUp = navigateToSignUp,
+        viewModel = viewModel
+    )
 }

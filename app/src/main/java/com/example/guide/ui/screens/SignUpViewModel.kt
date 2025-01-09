@@ -32,7 +32,7 @@ class SignUpViewModel(private val userRepository: UsersRepository) : ViewModel()
         passwordVisible.value = !passwordVisible.value
     }
 
-    fun onSignUpClicked(navController: NavHostController) {
+    fun onSignUpClicked(navigateToMain: (Int) -> Unit) {
         viewModelScope.launch {
             val userId = userRepository.getUserIdFromUsername(username.value)
                 .firstOrNull()
@@ -41,7 +41,12 @@ class SignUpViewModel(private val userRepository: UsersRepository) : ViewModel()
                 val user =
                     User(username = username.value, email = email.value, password = password.value)
                 userRepository.insertUser(user)
-                navController.navigate("MainActivity")
+                val userId = userRepository.getUserIdFromUsername(username.value)
+                    .firstOrNull()
+                if (userId != null)
+                    navigateToMain(userId)
+                else
+                    errorMessage.value = "There has been an error. Please try again..."
             }  else {
                 // Show error message if username exists
                 errorMessage.value = "This username is in use! Please try another one..."

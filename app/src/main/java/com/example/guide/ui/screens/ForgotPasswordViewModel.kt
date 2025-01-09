@@ -21,7 +21,7 @@ class ForgotPasswordViewModel(private val userRepository: UsersRepository) : Vie
         newPassword.value = newPass
     }
 
-    fun onResetPassword(navController: NavHostController) {
+    fun onResetPassword(navigateToMain: (Int) -> Unit) {
         viewModelScope.launch {
             val userId = userRepository.getUserIdFromUsername(username.value)
                 .firstOrNull()
@@ -31,9 +31,9 @@ class ForgotPasswordViewModel(private val userRepository: UsersRepository) : Vie
                     .firstOrNull()
                 if (user != null) {
                     userRepository.updateUser(user)
-                    navController.navigate("LoginActivity") // Navigate to login screen
+                    navigateToMain(userId)
                 }else {
-                    errorMessage.value = "Invalid username"
+                    errorMessage.value = "There has been an error. Please try again..."
                 }
             } else {
                 errorMessage.value = "Invalid username"

@@ -14,7 +14,6 @@ class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() 
     var passwordVisible = mutableStateOf(false)
     var errorMessage = mutableStateOf("")
 
-
     fun onUsernameChange(newUsername: String) {
         username.value = newUsername
     }
@@ -27,7 +26,7 @@ class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() 
         passwordVisible.value = !passwordVisible.value
     }
 
-    fun onLoginClicked(navController: NavHostController) {
+    fun onLoginClicked(navigateToMain: (Int) -> Unit) {
         viewModelScope.launch {
             // Get the user from the database
             val user = userRepository.getUserByUsernameAndPassword(username.value, password.value)
@@ -35,7 +34,13 @@ class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() 
 
             if (user != null && user.password == password.value) {
                 // User exists and password matches
-                navController.navigate("MainActivity") // Navigate to the next screen
+                val userId = userRepository.getUserIdFromUsername(username.value)
+                    .firstOrNull()
+                if (userId != null)
+                    navigateToMain(userId)
+                else
+                    // Show error message if credentials are invalid
+                    errorMessage.value = "There has been an error. Please try again..."
             } else {
                 // Show error message if credentials are invalid
                 errorMessage.value = "Invalid username or password"

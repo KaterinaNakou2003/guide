@@ -26,9 +26,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.guide.R
+import com.example.guide.ui.AppViewModelProvider
+import com.example.guide.ui.navigation.NavigationDestination
+
+object MainDestination : NavigationDestination {
+    override val route = "home"
+}
 
 @Composable
-fun MainScreen(navController: NavHostController, viewModel: MainViewModel = viewModel()) {
+fun MainScreen(navController: NavHostController, viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
