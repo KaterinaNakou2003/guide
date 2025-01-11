@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.guide.network.Place
 import com.example.guide.network.PlacesApi
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 import java.io.IOException
 
 sealed interface PlacesApiUiState {
@@ -37,12 +38,11 @@ class SearchResultsViewModel(
     // Function to perform the search and update the query and search results
     fun searchPlaces(query: String) {
         _query.value = query // Update the query state
-        // Make API call to Google Places API
-        /*
-        viewModelScope.launch {
+        try {
+            _query.value = query // Update the query state
+            viewModelScope.launch {
                 try {
-                    val response = PlacesApi.retrofitService.findPlaceFromText(query).execute()
-                    // Check if the response was successful
+                    val response = PlacesApi.retrofitService.findPlaceFromText(query)
                     if (response.isSuccessful) {
                         placesApiUiState = PlacesApiUiState.Success
                         val placesResponse = response.body()
@@ -52,10 +52,18 @@ class SearchResultsViewModel(
                     }
                 } catch (e: IOException) {
                     placesApiUiState = PlacesApiUiState.Error
+                } catch (e: Exception) {
+                    placesApiUiState = PlacesApiUiState.Error
                 }
-        }
 
-         */
+            }
+        } catch (e: IOException) {
+            // Handle network-related errors like no internet connection
+            placesApiUiState = PlacesApiUiState.Error
+        } catch (e: SerializationException) {
+            // Handle deserialization errors, e.g., missing or unexpected fields in the response
+            placesApiUiState = PlacesApiUiState.Error
+        }
     }
 
     init {
