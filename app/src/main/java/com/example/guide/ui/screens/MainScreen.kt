@@ -30,13 +30,14 @@ import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
 
 object MainDestination : NavigationDestination {
-    override val route = "home"
+    override val route = "main"
 }
 
 @Composable
 fun MainScreen(navigateBack: () -> Unit,
                navigateToProfile: () -> Unit,
                navigateToSearch: () -> Unit,
+               navigateToResults: () -> Unit,
                viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -51,11 +52,13 @@ fun MainScreen(navigateBack: () -> Unit,
             ) {
                 SearchBar(
                     query = viewModel.searchQuery,
-                    onQueryChange = { viewModel.onSearchQueryChanged(it) }
+                    onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                    navigateToResults = navigateToResults
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
+               /*
+               It just makes the screen unnecessarily complicated so I chose to hide this section
                 LazyColumn {
                     items(viewModel.filteredItems.size) { index ->
                         Text(
@@ -65,6 +68,8 @@ fun MainScreen(navigateBack: () -> Unit,
                         )
                     }
                 }
+
+                */
 
                 Spacer(modifier = Modifier.height(16.dp))
                 // Buttons Section
@@ -150,22 +155,46 @@ fun MainScreen(navigateBack: () -> Unit,
 @Composable
 fun SearchBar(
     query: String,
-    onQueryChange: (String) -> Unit
+    onQueryChange: (String) -> Unit,
+    navigateToResults: () -> Unit
 ) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = {
-            Text(
-                text = "Search here your destination...",
-                style = TextStyle(color = MaterialTheme.colorScheme.primary)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween, // Adjust spacing as needed
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = query,
+            onValueChange = onQueryChange,
+            placeholder = {
+                Text(
+                    text = "Search here for your destination...",
+                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+                .weight(1f),
+            singleLine = true
+        )
+        IconButton(
+            onClick = {
+                /* navigate to next page everything else is handled from the NavGraph
+                 * or the SearchResultsViewModel
+                */
+                navigateToResults()
+            },
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Search"
             )
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        singleLine = true
-    )
+
+        }
+    }
 }
 
 
@@ -256,6 +285,9 @@ fun PreviewMainScreen() {
     val navigateToSearch: () -> Unit = {
         println("Navigate to Search") // Simulate navigation (logging for preview)
     }
+    val navigateToResults: () -> Unit = {
+        println("Navigate to Search Results") // Simulate navigation (logging for preview)
+    }
 
     // Mocked navigation function for navigating back (no-op for preview)
     val navigateBack: () -> Unit = {
@@ -266,5 +298,6 @@ fun PreviewMainScreen() {
     MainScreen(navigateBack,
             navigateToProfile,
             navigateToSearch,
+            navigateToResults,
             viewModel)
 }

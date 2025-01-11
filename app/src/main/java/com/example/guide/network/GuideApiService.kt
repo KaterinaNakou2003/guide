@@ -16,18 +16,18 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-object placesApi {
+interface GuideApiService {
+    @GET("maps/api/place/findplacefromtext/json")
+    suspend fun findPlaceFromText(
+        @Query("input") input: String,
+        @Query("inputtype") inputType: String = "textquery",
+        @Query("fields") fields: String = "place_id,formatted_address,name,photo,rating",
+        @Query("key") apiKey: String = "Insert-your-key-here"
+    ): Call<PlacesResponse>
+}
+
+object PlacesApi {
     val retrofitService : GuideApiService by lazy {
         retrofit.create(GuideApiService::class.java)
     }
-}
-
-interface GuideApiService {
-    @GET("maps/api/place/findplacefromtext/json")
-    fun findPlaceFromText(
-        @Query("input") input: String,
-        @Query("inputtype") inputType: String = "textquery",
-        @Query("fields") fields: String = "formatted_address,name,photo",
-        @Query("key") apiKey: String = "GOOGLE_MAPS_API_KEY"
-    ): Call<PlacesResponse>
 }

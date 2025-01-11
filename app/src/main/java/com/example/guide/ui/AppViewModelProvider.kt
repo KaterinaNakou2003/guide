@@ -12,8 +12,10 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.lifecycle.viewmodel.CreationExtras
 
+
 /**
  * Provides Factory to create instance of ViewModel for the entire Guide app
+ * except for SearchResultsViewModel.
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -55,3 +57,4 @@ fun CreationExtras.guideApplication(): GuideApplication {
         ?: throw IllegalStateException("Application is not available in CreationExtras")
     return application as GuideApplication
 }
+

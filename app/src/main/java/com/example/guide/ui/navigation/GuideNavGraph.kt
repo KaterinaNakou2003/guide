@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.guide.ui.AppViewModelProvider
+import com.example.guide.ui.SearchResultsViewModelFactory
 
 import com.example.guide.ui.screens.ForgotPasswordDestination
 import com.example.guide.ui.screens.ForgotPasswordScreen
@@ -23,6 +24,9 @@ import com.example.guide.ui.screens.LoginViewModel
 import com.example.guide.ui.screens.MainDestination
 import com.example.guide.ui.screens.MainScreen
 import com.example.guide.ui.screens.MainViewModel
+import com.example.guide.ui.screens.SearchResultsDestination
+import com.example.guide.ui.screens.SearchResultsScreen
+import com.example.guide.ui.screens.SearchResultsViewModel
 
 import com.example.guide.ui.screens.SignUpDestination
 import com.example.guide.ui.screens.SignUpScreen
@@ -39,6 +43,7 @@ fun GuideNavHost(
     val signUpViewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainViewModel : MainViewModel = viewModel()
+    // val searchResultsViewModel: SearchResultsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     NavHost(
         navController = navController,
@@ -77,6 +82,7 @@ fun GuideNavHost(
                 viewModel = signUpViewModel
             )
         }
+
         // Main Screen oxi akoma ready
         composable(route = "${MainDestination.route}/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
@@ -86,7 +92,28 @@ fun GuideNavHost(
                 navigateBack = { navController.navigateUp() },
                 navigateToProfile = { navController.navigate("profile") },
                 navigateToSearch = { navController.navigate("search") },
+                // Navigation connection with results page. The search query is also needed.
+                navigateToResults = {navController.navigate("${SearchResultsDestination.route}/$userId/${mainViewModel.searchQuery}")} ,
                 viewModel = mainViewModel
+            )
+        }
+
+        // Search Results Screen
+        composable(route = "${SearchResultsDestination.route}/{userId}/{query}",
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("query") { type = NavType.StringType })
+        ){backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val query = backStackEntry.arguments?.getString("query")
+            // Create the viewmodel later as the query needs to be passed as the parameter
+            val searchResultsViewModel: SearchResultsViewModel = viewModel(factory = SearchResultsViewModelFactory(query))
+            SearchResultsScreen(
+                navigateBack = { navController.navigateUp() },
+                navigateToProfile = { navController.navigate("profile") },
+                navigateToSearch = { navController.navigate("search") },
+                onPlaceClick = { },
+                viewModel = searchResultsViewModel
             )
         }
 
