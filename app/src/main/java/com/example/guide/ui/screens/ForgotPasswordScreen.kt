@@ -13,6 +13,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.guide.data.FakeUsersRepository
@@ -112,7 +114,8 @@ fun ForgotPasswordScreen(navigateBack: () -> Unit,  // Navigate back to the prev
 @Composable
 fun PreviewForgotPasswordScreen() {
     val fakeRepository = FakeUsersRepository() //mock repo
-
+    val savedStateHandle = remember { SavedStateHandle() }
+    savedStateHandle["userId"] = 1
     // Implementing mocked navigation functions for the preview
     val navigateToMain: (Int) -> Unit = { id ->
         println("Navigate to Main with id: $id") // Simulate navigation (logging for preview)
@@ -123,7 +126,7 @@ fun PreviewForgotPasswordScreen() {
         println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
     }
 
-    val viewModel = ForgotPasswordViewModel(fakeRepository)
+    val viewModel = ForgotPasswordViewModel(fakeRepository, savedStateHandle)
     ForgotPasswordScreen(navigateBack,  // Navigate back to the previous screen
                         navigateToMain,  // Function to navigate to MainScreen with the id
                         viewModel)

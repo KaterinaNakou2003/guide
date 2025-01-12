@@ -40,6 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.remember
+import androidx.lifecycle.SavedStateHandle
 import com.example.guide.data.FakeUsersRepository
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
@@ -185,8 +187,10 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
+    val savedStateHandle = remember { SavedStateHandle() }
+    savedStateHandle["userId"] = 1
     val fakeRepository = FakeUsersRepository() //mock repo
-    val viewModel = LoginViewModel(fakeRepository)
+    val viewModel = LoginViewModel(fakeRepository,savedStateHandle)
 
     // Implementing mocked navigation functions for the preview
     val navigateToMain: (Int) -> Unit = { id ->

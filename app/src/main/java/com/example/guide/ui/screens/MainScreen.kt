@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -53,23 +54,11 @@ fun MainScreen(navigateBack: () -> Unit,
                 SearchBar(
                     query = viewModel.searchQuery,
                     onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                    navigateBack,
                     navigateToResults = navigateToResults
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-               /*
-               It just makes the screen unnecessarily complicated so I chose to hide this section
-                LazyColumn {
-                    items(viewModel.filteredItems.size) { index ->
-                        Text(
-                            text = viewModel.filteredItems[index],
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
-
-                */
 
                 Spacer(modifier = Modifier.height(16.dp))
                 // Buttons Section
@@ -156,6 +145,7 @@ fun MainScreen(navigateBack: () -> Unit,
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
+    navigateBack: () -> Unit,
     navigateToResults: () -> Unit
 ) {
     Row(
@@ -183,6 +173,7 @@ fun SearchBar(
                 /* navigate to next page everything else is handled from the NavGraph
                  * or the SearchResultsViewModel
                 */
+
                 navigateToResults()
             },
             colors = IconButtonDefaults.iconButtonColors(
@@ -202,54 +193,54 @@ fun SearchBar(
 @Composable
 fun BottomNavigationBar(
     navigateToProfile: () -> Unit,
-    navigateToSearch: () -> Unit, // Pass NavController for navigation
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
+) {
+    var selectedIndex by remember { mutableStateOf(1) }
+
+    NavigationBar(
+        modifier = modifier.fillMaxWidth(),
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
-        var selectedIndex by remember { mutableStateOf(0) }
+        val items = listOf("Back", "Home", "Profile")
 
-        NavigationBar(
-            modifier = modifier.fillMaxWidth(),
-            containerColor = MaterialTheme.colorScheme.surface
-        ) {
-            val items = listOf("Home", "Search", "Settings")
-
-            items.forEachIndexed { index, label ->
-                NavigationBarItem(
-                    icon = {
-                        when (label) {
-                            "Home" -> Icon(
-                                imageVector = Icons.Filled.Home,
-                                contentDescription = label
-                            )
-                            "Search" -> Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = label
-                            )
-                            "Profile" -> Icon(
-                                imageVector = Icons.Filled.AccountCircle,
-                                contentDescription = label
-                            )
-                        }
-                    },
-                    label = {
-                        Text(
-                            text = label,
-                            style = TextStyle(
-                                color = if (selectedIndex == index) Color.White else Color.Black
-                            )
+        items.forEachIndexed { index, label ->
+            NavigationBarItem(
+                icon = {
+                    when (label) {
+                        "Back" -> Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = label
                         )
-                    },
-                    selected = selectedIndex == index,
-                    onClick = {
-                        selectedIndex = index
-                        when (label) {
-                            "Search" -> navigateToSearch
-                            "Profile" -> navigateToProfile
-                        }
+                        "Home" -> Icon(
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = label
+                        )
+                        "Profile" -> Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = label
+                        )
                     }
-                )
-            }
+                },
+                label = {
+                    Text(
+                        text = label,
+                        style = TextStyle(
+                            color = if (selectedIndex == index) Color.White else Color.Black
+                        )
+                    )
+                },
+                selected = selectedIndex == index,
+                onClick = {
+                    selectedIndex = index
+                    when (label) {
+                        "Back" -> navigateBack()
+                        "Profile" -> navigateToProfile()
+                    }
+                }
+            )
         }
+    }
 }
 
 @Composable

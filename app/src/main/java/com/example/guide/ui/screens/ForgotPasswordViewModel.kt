@@ -3,12 +3,13 @@ package com.example.guide.ui.screens
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
+import androidx.lifecycle.SavedStateHandle
 import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class ForgotPasswordViewModel(private val userRepository: UsersRepository) : ViewModel() {
+class ForgotPasswordViewModel(private val userRepository: UsersRepository,
+                              private val savedStateHandle: SavedStateHandle) : ViewModel() {
     var username = mutableStateOf("")
     var newPassword = mutableStateOf("")
     var errorMessage = mutableStateOf("")
@@ -30,7 +31,9 @@ class ForgotPasswordViewModel(private val userRepository: UsersRepository) : Vie
                 val user = userRepository.getUserStream(userId)
                     .firstOrNull()
                 if (user != null) {
-                    userRepository.updateUser(user)
+                    val updatedUser = user.copy(password = newPassword.value)
+                    userRepository.updateUser(updatedUser)
+                    savedStateHandle["userId"] = userId
                     navigateToMain(userId)
                 }else {
                     errorMessage.value = "There has been an error. Please try again..."

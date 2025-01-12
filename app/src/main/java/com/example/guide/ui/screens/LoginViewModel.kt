@@ -1,6 +1,7 @@
 package com.example.guide.ui.screens
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -8,7 +9,8 @@ import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() {
+class LoginViewModel(private val userRepository: UsersRepository,
+                        private val savedStateHandle: SavedStateHandle) : ViewModel() {
     var username = mutableStateOf("")
     var password = mutableStateOf("")
     var passwordVisible = mutableStateOf(false)
@@ -36,9 +38,10 @@ class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() 
                 // User exists and password matches
                 val userId = userRepository.getUserIdFromUsername(username.value)
                     .firstOrNull()
-                if (userId != null)
+                if (userId != null) {
+                    savedStateHandle["userId"] = userId
                     navigateToMain(userId)
-                else
+                } else
                     // Show error message if credentials are invalid
                     errorMessage.value = "There has been an error. Please try again..."
             } else {

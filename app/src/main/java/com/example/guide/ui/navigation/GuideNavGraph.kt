@@ -24,6 +24,11 @@ import com.example.guide.ui.screens.LoginViewModel
 import com.example.guide.ui.screens.MainDestination
 import com.example.guide.ui.screens.MainScreen
 import com.example.guide.ui.screens.MainViewModel
+
+import com.example.guide.ui.screens.ProfileDestination
+import com.example.guide.ui.screens.ProfileScreen
+import com.example.guide.ui.screens.ProfileViewModel
+
 import com.example.guide.ui.screens.SearchResultsDestination
 import com.example.guide.ui.screens.SearchResultsScreen
 import com.example.guide.ui.screens.SearchResultsViewModel
@@ -43,6 +48,7 @@ fun GuideNavHost(
     val signUpViewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainViewModel : MainViewModel = viewModel()
+    val profileViewModel : ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
     // val searchResultsViewModel: SearchResultsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     NavHost(
@@ -114,6 +120,15 @@ fun GuideNavHost(
                 navigateToSearch = { navController.navigate("search") },
                 onPlaceClick = { },
                 viewModel = searchResultsViewModel
+            )
+        }
+
+        // Profile Screen
+        composable(route = ProfileDestination.route) {
+            ProfileScreen(
+                navigateBack = { navController.navigateUp() },
+                navigateToMain = {navController.navigate(MainDestination.route) },
+                viewModel = profileViewModel
             )
         }
 

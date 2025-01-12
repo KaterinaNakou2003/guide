@@ -10,7 +10,9 @@ import com.example.guide.ui.screens.MainViewModel
 import com.example.guide.ui.screens.SignUpViewModel
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.guide.ui.screens.ProfileViewModel
 
 
 /**
@@ -22,16 +24,16 @@ object AppViewModelProvider {
 
         // Initializer for ForgotPasswordViewModel
         initializer {
-            ForgotPasswordViewModel(guideApplication().container.usersRepository)
+            ForgotPasswordViewModel(guideApplication().container.usersRepository,this.createSavedStateHandle())
         }
 
         // Initializer for LoginViewModel
         initializer {
-            LoginViewModel(guideApplication().container.usersRepository)
+            LoginViewModel(guideApplication().container.usersRepository,this.createSavedStateHandle())
         }
         // Initializer for SignUpViewModel
         initializer {
-            SignUpViewModel(guideApplication().container.usersRepository)
+            SignUpViewModel(guideApplication().container.usersRepository,this.createSavedStateHandle())
         }
 
         // Initializer for MainViewModel
@@ -44,6 +46,10 @@ object AppViewModelProvider {
             HomeViewModel()
         }
 
+        // Initializer for ProfileViewModel
+        initializer {
+            ProfileViewModel(guideApplication().container.usersRepository,this.createSavedStateHandle())
+        }
 
     }
 }
