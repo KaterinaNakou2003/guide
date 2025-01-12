@@ -9,8 +9,7 @@ import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: UsersRepository,
-                        private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class LoginViewModel(private val userRepository: UsersRepository) : ViewModel() {
     var username = mutableStateOf("")
     var password = mutableStateOf("")
     var passwordVisible = mutableStateOf(false)
@@ -39,7 +38,6 @@ class LoginViewModel(private val userRepository: UsersRepository,
                 val userId = userRepository.getUserIdFromUsername(username.value)
                     .firstOrNull()
                 if (userId != null) {
-                    savedStateHandle["userId"] = userId
                     navigateToMain(userId)
                 } else
                     // Show error message if credentials are invalid

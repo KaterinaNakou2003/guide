@@ -152,10 +152,8 @@ fun SignUpScreen(navigateBack: () -> Unit,  // Navigate back to the previous scr
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
-    val savedStateHandle = remember { SavedStateHandle() }
-    savedStateHandle["userId"] = 1
     val fakeRepository = FakeUsersRepository() // Replace with your mock repo
-    val viewModel = SignUpViewModel(fakeRepository, savedStateHandle)
+    val viewModel = SignUpViewModel(fakeRepository)
 
     // Implementing mocked navigation functions for the preview
     val navigateToMain: (Int) -> Unit = { id ->

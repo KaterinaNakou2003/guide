@@ -8,8 +8,7 @@ import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class ForgotPasswordViewModel(private val userRepository: UsersRepository,
-                              private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class ForgotPasswordViewModel(private val userRepository: UsersRepository): ViewModel() {
     var username = mutableStateOf("")
     var newPassword = mutableStateOf("")
     var errorMessage = mutableStateOf("")
@@ -33,7 +32,6 @@ class ForgotPasswordViewModel(private val userRepository: UsersRepository,
                 if (user != null) {
                     val updatedUser = user.copy(password = newPassword.value)
                     userRepository.updateUser(updatedUser)
-                    savedStateHandle["userId"] = userId
                     navigateToMain(userId)
                 }else {
                     errorMessage.value = "There has been an error. Please try again..."

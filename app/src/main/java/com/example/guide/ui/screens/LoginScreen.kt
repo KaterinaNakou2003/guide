@@ -187,10 +187,9 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
-    val savedStateHandle = remember { SavedStateHandle() }
-    savedStateHandle["userId"] = 1
+    
     val fakeRepository = FakeUsersRepository() //mock repo
-    val viewModel = LoginViewModel(fakeRepository,savedStateHandle)
+    val viewModel = LoginViewModel(fakeRepository)
 
     // Implementing mocked navigation functions for the preview
     val navigateToMain: (Int) -> Unit = { id ->

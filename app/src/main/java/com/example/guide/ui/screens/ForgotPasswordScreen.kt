@@ -114,8 +114,6 @@ fun ForgotPasswordScreen(navigateBack: () -> Unit,  // Navigate back to the prev
 @Composable
 fun PreviewForgotPasswordScreen() {
     val fakeRepository = FakeUsersRepository() //mock repo
-    val savedStateHandle = remember { SavedStateHandle() }
-    savedStateHandle["userId"] = 1
     // Implementing mocked navigation functions for the preview
     val navigateToMain: (Int) -> Unit = { id ->
         println("Navigate to Main with id: $id") // Simulate navigation (logging for preview)
@@ -126,7 +124,7 @@ fun PreviewForgotPasswordScreen() {
         println("Navigate back to the previous screen")  // Simulate navigation (logging for preview)
     }
 
-    val viewModel = ForgotPasswordViewModel(fakeRepository, savedStateHandle)
+    val viewModel = ForgotPasswordViewModel(fakeRepository)
     ForgotPasswordScreen(navigateBack,  // Navigate back to the previous screen
                         navigateToMain,  // Function to navigate to MainScreen with the id
                         viewModel)

@@ -57,7 +57,7 @@ object ProfileDestination : NavigationDestination {
 @Composable
 fun ProfileScreen( navigateBack: () -> Unit,
                    navigateToMain: () -> Unit,
-                   viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+                   viewModel: ProfileViewModel = viewModel()
 ) {
     var isAccountInfoExpanded by remember { mutableStateOf(false) }
 
@@ -71,7 +71,7 @@ fun ProfileScreen( navigateBack: () -> Unit,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Hi, ${viewModel.userId}",
+                    text = "${viewModel.username.value}, ${viewModel.userId.value}",
                     style = TextStyle(
                         color = Color(0xFF800080), // Purple color
                         fontWeight = FontWeight.Bold, // Bold text
@@ -276,10 +276,9 @@ fun ProfileBottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
-    val savedStateHandle = remember { SavedStateHandle() }
-    savedStateHandle["userId"] = 1 // Set a fake userId for the preview
     val fakeRepository = FakeUsersRepository() //mock repo
-    val viewModel = ProfileViewModel(fakeRepository, savedStateHandle)
+    val userID = 5
+    val viewModel = ProfileViewModel(userID, fakeRepository)
 
     // Implementing mocked navigation functions for the preview
     val navigateToMain: () -> Unit = {

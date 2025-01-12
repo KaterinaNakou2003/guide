@@ -9,10 +9,11 @@ import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val userRepository: UsersRepository,
-                       private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    val userId: Int = savedStateHandle["userId"] ?: -1
+class ProfileViewModel(
+    private val userID: Int,
+    private val userRepository: UsersRepository) : ViewModel() {
+
+    val userId = mutableStateOf(userID)
     var username = mutableStateOf("")
     var password = mutableStateOf("")
     var email = mutableStateOf("")
@@ -24,7 +25,7 @@ class ProfileViewModel(private val userRepository: UsersRepository,
     init {
         viewModelScope.launch {
             // Fetch user details using userId
-            val user = userRepository.getUserStream(userId).firstOrNull()
+            val user = userRepository.getUserStream(userId.value).firstOrNull()
             if (user != null) {
                 username.value = user.username
                 email.value = user.email

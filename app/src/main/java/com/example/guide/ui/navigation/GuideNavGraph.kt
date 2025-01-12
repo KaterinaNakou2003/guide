@@ -1,14 +1,20 @@
 package com.example.guide.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.guide.data.AppDataContainer
+import com.example.guide.data.OfflineUsersRepository
+import com.example.guide.data.UsersRepository
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.SearchResultsViewModelFactory
+import com.example.guide.ui.ProfileViewModelFactory
+
 
 import com.example.guide.ui.screens.ForgotPasswordDestination
 import com.example.guide.ui.screens.ForgotPasswordScreen
@@ -37,6 +43,7 @@ import com.example.guide.ui.screens.SignUpDestination
 import com.example.guide.ui.screens.SignUpScreen
 import com.example.guide.ui.screens.SignUpViewModel
 
+
 /**
  * Provides Navigation graph for the application.
  */
@@ -48,7 +55,10 @@ fun GuideNavHost(
     val signUpViewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainViewModel : MainViewModel = viewModel()
-    val profileViewModel : ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    // Get instance of UserRepository for the profile view model
+    val container = AppDataContainer(navController.context)
+    val userRepository= container.usersRepository
+
 
     NavHost(
         navController = navController,
@@ -95,7 +105,7 @@ fun GuideNavHost(
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             MainScreen(
                 navigateBack = { navController.navigateUp() },
-                navigateToProfile = { navController.navigate("profile") },
+                navigateToProfile = { navController.navigate("profile/$userId") },
                 navigateToSearch = { },
                 // Navigation connection with results page. The search query is also needed.
                 navigateToResults = {navController.navigate("${SearchResultsDestination.route}/$userId/${mainViewModel.searchQuery}")} ,
@@ -115,7 +125,7 @@ fun GuideNavHost(
             val searchResultsViewModel: SearchResultsViewModel = viewModel(factory = SearchResultsViewModelFactory(query))
             SearchResultsScreen(
                 navigateBack = { navController.navigateUp() },
-                navigateToProfile = { navController.navigate("profile") },
+                navigateToProfile = { navController.navigate("profile/$userId") },
                 navigateToSearch = { navController.navigate("search/$userId") },
                 onPlaceClick = { },
                 viewModel = searchResultsViewModel
@@ -123,10 +133,16 @@ fun GuideNavHost(
         }
 
         // Profile Screen
-        composable(route = ProfileDestination.route) {
+        composable(route = "${ProfileDestination.route}/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val profileViewModel: ProfileViewModel = viewModel(
+                factory = ProfileViewModelFactory(userId, userRepository)
+            )
             ProfileScreen(
                 navigateBack = { navController.navigateUp() },
-                navigateToMain = {navController.navigate(MainDestination.route) },
+                navigateToMain = {navController.navigate("${MainDestination.route}/$userId") },
                 viewModel = profileViewModel
             )
         }

@@ -10,9 +10,7 @@ import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(private val userRepository: UsersRepository,
-                      private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class SignUpViewModel(private val userRepository: UsersRepository) : ViewModel() {
     var username = mutableStateOf("")
     var email = mutableStateOf("")
     var password = mutableStateOf("")
@@ -44,11 +42,10 @@ class SignUpViewModel(private val userRepository: UsersRepository,
                 val user =
                     User(username = username.value, email = email.value, password = password.value)
                 userRepository.insertUser(user)
-                val userId = userRepository.getUserIdFromUsername(username.value)
+                val newUserId = userRepository.getUserIdFromUsername(username.value)
                     .firstOrNull()
-                if (userId != null) {
-                    savedStateHandle["userId"] = userId
-                    navigateToMain(userId)
+                if (newUserId != null) {
+                    navigateToMain(newUserId)
                 } else {
                     errorMessage.value = "There has been an error. Please try again..."
                 }
