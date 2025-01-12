@@ -64,7 +64,8 @@ data class Place(
     @SerialName("formatted_address") val formattedAddress: String,
     @SerialName("name") val name: String,
     @SerialName("photo") val photos: List<Photo>?,
-    @SerialName("rating") val rating: Double
+    @SerialName("rating") val rating: Double,
+    @SerialName("types") val types: List<String>
 )
 
 @Serializable
@@ -79,6 +80,7 @@ data class PlacesResponse(
             formattedAddress = it.formattedAddress,
             name = it.name,
             photos = it.photos,
+            types = it.types,
             rating = it.rating ?: 0.0 // Provide default rating if null
         )
     }

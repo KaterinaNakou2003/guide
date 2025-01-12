@@ -37,7 +37,6 @@ class SearchResultsViewModel(
 
     // Function to perform the search and update the query and search results
     fun searchPlaces(query: String) {
-        _query.value = query // Update the query state
         try {
             _query.value = query // Update the query state
             viewModelScope.launch {

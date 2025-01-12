@@ -31,7 +31,7 @@ import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
 
 object MainDestination : NavigationDestination {
-    override val route = "main"
+    override val route = "search"
 }
 
 @Composable
@@ -54,7 +54,6 @@ fun MainScreen(navigateBack: () -> Unit,
                 SearchBar(
                     query = viewModel.searchQuery,
                     onQueryChange = { viewModel.onSearchQueryChanged(it) },
-                    navigateBack,
                     navigateToResults = navigateToResults
                 )
 
@@ -72,14 +71,20 @@ fun MainScreen(navigateBack: () -> Unit,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
-                            onClick = { viewModel.onButtonClick("monuments") },
+                            onClick = {
+                                viewModel.onButtonClick("monuments")
+                                navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Monuments")
                         }
 
                         Button(
-                            onClick = { viewModel.onButtonClick("museums") },
+                            onClick = {
+                                viewModel.onButtonClick("museums")
+                                navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Museums")
@@ -93,14 +98,18 @@ fun MainScreen(navigateBack: () -> Unit,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
-                            onClick = { viewModel.onButtonClick("cafes") },
+                            onClick = { viewModel.onButtonClick("cafes")
+                                        navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Cafes")
                         }
 
                         Button(
-                            onClick = { viewModel.onButtonClick("restaurants") },
+                            onClick = { viewModel.onButtonClick("restaurants")
+                                        navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Restaurants")
@@ -114,14 +123,18 @@ fun MainScreen(navigateBack: () -> Unit,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
-                            onClick = { viewModel.onButtonClick("bars") },
+                            onClick = { viewModel.onButtonClick("bars")
+                                        navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Bars")
                         }
 
                         Button(
-                            onClick = { viewModel.onButtonClick("bakeries") },
+                            onClick = { viewModel.onButtonClick("bakeries")
+                                        navigateToResults()
+                                      },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Bakeries")
@@ -133,9 +146,9 @@ fun MainScreen(navigateBack: () -> Unit,
 
             Spacer(modifier = Modifier.height(16.dp))
         }
-        BottomNavigationBar(
-            navigateToProfile,
+        BottomNavigationBar(navigateBack,
             navigateToSearch,
+            navigateToProfile,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -145,7 +158,6 @@ fun MainScreen(navigateBack: () -> Unit,
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    navigateBack: () -> Unit,
     navigateToResults: () -> Unit
 ) {
     Row(
@@ -173,7 +185,6 @@ fun SearchBar(
                 /* navigate to next page everything else is handled from the NavGraph
                  * or the SearchResultsViewModel
                 */
-
                 navigateToResults()
             },
             colors = IconButtonDefaults.iconButtonColors(
@@ -192,8 +203,9 @@ fun SearchBar(
 // Bottom Navigation Bar Function
 @Composable
 fun BottomNavigationBar(
-    navigateToProfile: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedIndex by remember { mutableStateOf(1) }
@@ -235,6 +247,7 @@ fun BottomNavigationBar(
                     selectedIndex = index
                     when (label) {
                         "Back" -> navigateBack()
+                        "Home" -> navigateToSearch()
                         "Profile" -> navigateToProfile()
                     }
                 }

@@ -49,7 +49,6 @@ fun GuideNavHost(
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainViewModel : MainViewModel = viewModel()
     val profileViewModel : ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    // val searchResultsViewModel: SearchResultsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     NavHost(
         navController = navController,
@@ -97,7 +96,7 @@ fun GuideNavHost(
             MainScreen(
                 navigateBack = { navController.navigateUp() },
                 navigateToProfile = { navController.navigate("profile") },
-                navigateToSearch = { navController.navigate("search") },
+                navigateToSearch = { },
                 // Navigation connection with results page. The search query is also needed.
                 navigateToResults = {navController.navigate("${SearchResultsDestination.route}/$userId/${mainViewModel.searchQuery}")} ,
                 viewModel = mainViewModel
@@ -117,7 +116,7 @@ fun GuideNavHost(
             SearchResultsScreen(
                 navigateBack = { navController.navigateUp() },
                 navigateToProfile = { navController.navigate("profile") },
-                navigateToSearch = { navController.navigate("search") },
+                navigateToSearch = { navController.navigate("search/$userId") },
                 onPlaceClick = { },
                 viewModel = searchResultsViewModel
             )
