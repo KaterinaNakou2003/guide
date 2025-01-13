@@ -1,5 +1,6 @@
 package com.example.guide.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
@@ -35,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,10 +48,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guide.data.FakeUsersRepository
-import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
 
 object ProfileDestination : NavigationDestination {
@@ -70,12 +72,13 @@ fun ProfileScreen( navigateBack: () -> Unit,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.height(30.dp))
                 Text(
-                    text = "${viewModel.username.value}, ${viewModel.userId.value}",
+                    text = "Hello, ${viewModel.username.value} !",
                     style = TextStyle(
                         color = Color(0xFF800080), // Purple color
                         fontWeight = FontWeight.Bold, // Bold text
-                        fontSize = 20.sp // Optional: Change font size
+                        fontSize = 26.sp // Optional: Change font size
                     ),
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
@@ -96,10 +99,11 @@ fun ProfileScreen( navigateBack: () -> Unit,
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(8.dp)
                         .clickable {
                             isAccountInfoExpanded = !isAccountInfoExpanded
                         }
-                        .padding(8.dp),
+                        ,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -113,7 +117,97 @@ fun ProfileScreen( navigateBack: () -> Unit,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                if (isAccountInfoExpanded) {
+                        // Display editable account info when expanded
+                        Column{
+                            OutlinedTextField(
+                                value = viewModel.username.value,
+                                onValueChange = { viewModel.onUsernameChange(it) },
+                                label = { Text("Username") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            OutlinedTextField(
+                                value = viewModel.email.value,
+                                onValueChange = { viewModel.onEmailChange(it) },
+                                label = { Text("Email") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            OutlinedTextField(
+                                value = viewModel.password.value,
+                                onValueChange = { viewModel.onPasswordChange(it) },
+                                label = { Text("Password") },
+                                visualTransformation = if (viewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                                trailingIcon = {
+                                    val icon =
+                                        if (viewModel.passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                                    IconButton(onClick = { viewModel.onPasswordVisibilityToggle() }) {
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = "Toggle password visibility"
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Change Credentials Button
+                            Button(
+                                onClick = {
+                                    viewModel.onChangeClicked()
+                                    // Close the Account Info section
+                                    isAccountInfoExpanded = false
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Change Credentials")
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                }
+
+                if (viewModel.errorMessage.value.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth() // Box width adjusts to text width
+                            .padding(top = 8.dp)
+                            .background(Color.Red.copy(alpha = 0.1f)) // Red background with low opacity
+                            .clip(RoundedCornerShape(3.dp))
+                            .padding(8.dp) // Padding for the error text
+                    ) {
+                        Text(
+                            text = viewModel.errorMessage.value,
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+
+                if (viewModel.successMessage.value.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth() // Box width adjusts to text width
+                            .padding(top = 8.dp)
+                            .background(Color.Green.copy(alpha = 0.1f)) // Red background with low opacity
+                            .clip(RoundedCornerShape(3.dp))
+                            .padding(8.dp) // Padding for the error text
+                    ) {
+                        Text(
+                            text = viewModel.successMessage.value,
+                            color = Color.Green,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -136,58 +230,6 @@ fun ProfileScreen( navigateBack: () -> Unit,
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (isAccountInfoExpanded) {
-                    // Display editable account info when expanded
-                    OutlinedTextField(
-                        value = viewModel.username.value,
-                        onValueChange = { viewModel.onUsernameChange(it) },
-                        label = { Text("Username") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = viewModel.email.value,
-                        onValueChange = { viewModel.onEmailChange(it) },
-                        label = { Text("Email") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = viewModel.password.value,
-                        onValueChange = { viewModel.onPasswordChange(it) },
-                        label = { Text("Password") },
-                        visualTransformation = if (viewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val icon =
-                                if (viewModel.passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = { viewModel.onPasswordVisibilityToggle() }) {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = "Toggle password visibility"
-                                )
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Change Credentials Button
-                    Button(
-                        onClick = {
-                            viewModel.onChangeClicked()
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Change Credentials")
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
             }
 
             ProfileBottomNavigationBar(
@@ -197,8 +239,6 @@ fun ProfileScreen( navigateBack: () -> Unit,
             )
 
         }
-
-
     }
 }
 
@@ -271,7 +311,6 @@ fun ProfileBottomNavigationBar(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

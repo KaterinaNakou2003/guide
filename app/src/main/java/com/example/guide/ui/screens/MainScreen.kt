@@ -3,7 +3,6 @@ package com.example.guide.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
@@ -23,9 +22,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.guide.R
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
@@ -47,6 +43,7 @@ fun MainScreen(navigateBack: () -> Unit,
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            Spacer(modifier = Modifier.height(30.dp))
             // Search Bar Section
             Column(
                 modifier = Modifier.weight(1f) // Fill available space

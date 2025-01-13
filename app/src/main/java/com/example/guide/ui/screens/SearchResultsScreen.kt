@@ -1,7 +1,5 @@
 package com.example.guide.ui.screens
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,11 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.guide.network.Place
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,12 +26,9 @@ import kotlin.text.isLowerCase
 import kotlin.text.replaceFirstChar
 import kotlin.text.titlecase
 
-
 object SearchResultsDestination : NavigationDestination {
     override val route = "search_results"
 }
-
-
 
 @Composable
 fun SearchResultsScreen(
@@ -93,7 +86,6 @@ fun SearchResultsScreen(
         }
     }
 }
-
 
 @Composable
 fun PlaceCard(place: Place,

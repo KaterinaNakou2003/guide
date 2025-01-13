@@ -40,8 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.remember
-import androidx.lifecycle.SavedStateHandle
 import com.example.guide.data.FakeUsersRepository
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.navigation.NavigationDestination
@@ -67,6 +65,7 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.height(30.dp))
                 Text(
                     text = "Login",
                     style = TextStyle(

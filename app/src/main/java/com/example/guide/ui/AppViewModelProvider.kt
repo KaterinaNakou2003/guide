@@ -10,10 +10,7 @@ import com.example.guide.ui.screens.MainViewModel
 import com.example.guide.ui.screens.SignUpViewModel
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
-
-
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Guide app

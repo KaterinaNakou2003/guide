@@ -47,6 +47,7 @@ fun ForgotPasswordScreen(navigateBack: () -> Unit,  // Navigate back to the prev
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.height(30.dp))
                 Text(
                     text = "Forgot Password",
                     style = TextStyle(

@@ -1,10 +1,8 @@
 package com.example.guide.ui.screens
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.guide.data.User
 import com.example.guide.data.UsersRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -14,13 +12,15 @@ class ProfileViewModel(
     private val userRepository: UsersRepository) : ViewModel() {
 
     val userId = mutableStateOf(userID)
+
     var username = mutableStateOf("")
     var password = mutableStateOf("")
     var email = mutableStateOf("")
     var passwordVisible = mutableStateOf(false)
-    var errorMessage = mutableStateOf("")
     val originalUsername = mutableStateOf("")
     val originalPassword = mutableStateOf("")
+    var errorMessage = mutableStateOf("")
+    var successMessage = mutableStateOf("")
 
     init {
         viewModelScope.launch {
@@ -58,13 +58,13 @@ class ProfileViewModel(
             val user =
                 userRepository.getUserByUsernameAndPassword(originalUsername.value, originalPassword.value)
                     .firstOrNull()
-            // update the credentials
-            val newUser =
-                User(username = username.value, email = email.value, password = password.value)
+
             if (user != null) {
+                // update the credentials
+                val newUser = user.copy(username = username.value, email = email.value, password = password.value)
                 userRepository.updateUser(newUser)
-
-
+                // Show a success message for the successful update of credentials
+                successMessage.value = "Your credentials have been updated successfully!"
             } else {
                 // Show error message if an error occurs
                 errorMessage.value = "There has been an error. Please try again..."

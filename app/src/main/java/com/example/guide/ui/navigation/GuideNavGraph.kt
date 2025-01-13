@@ -1,7 +1,6 @@
 package com.example.guide.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,12 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.guide.data.AppDataContainer
-import com.example.guide.data.OfflineUsersRepository
-import com.example.guide.data.UsersRepository
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.SearchResultsViewModelFactory
 import com.example.guide.ui.ProfileViewModelFactory
-
 
 import com.example.guide.ui.screens.ForgotPasswordDestination
 import com.example.guide.ui.screens.ForgotPasswordScreen
