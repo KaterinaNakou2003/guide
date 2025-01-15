@@ -19,7 +19,7 @@ import java.io.IOException
 class ProfileViewModel(
     private val userID: Int,
     private val userRepository: UsersRepository,
-    val favoritesRepository: FavoritesRepository
+    private val favoritesRepository: FavoritesRepository
 ) : ViewModel() {
 
     val userId = mutableStateOf(userID)

@@ -20,6 +20,7 @@ import java.util.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.guide.AppConfig
 import com.example.guide.R
 import com.example.guide.ui.navigation.NavigationDestination
 import kotlin.text.isLowerCase
@@ -95,7 +96,7 @@ fun PlaceCard(place: Place,
     // Get the reference for the place's photo
     val photoReference = place.photos?.firstOrNull()?.photoReference
     // Insert the API Key
-    val apiKey = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+    val apiKey = AppConfig.API_KEY
     // Build the URL for the photo
     val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
     Card(

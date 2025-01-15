@@ -41,6 +41,8 @@ import com.example.guide.network.Place
 import com.example.guide.network.Review
 import com.example.guide.ui.navigation.NavigationDestination
 import java.util.Locale
+import com.example.guide.AppConfig
+
 
 object DetailsDestination : NavigationDestination {
     override val route = "details"
@@ -67,7 +69,7 @@ fun DetailsScreen(
         // Get the reference for the place's photo
         val photoReference = place.photos?.firstOrNull()?.photoReference
         // Insert the API Key
-        val apiKey = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+        val apiKey = AppConfig.API_KEY
         // Build the URL for the photo
         val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
         Column(

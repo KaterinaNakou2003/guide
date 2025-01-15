@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.guide.AppConfig
 import com.example.guide.R
 import com.example.guide.data.FakeFavoritesRepository
 import com.example.guide.data.FakeUsersRepository
@@ -174,6 +175,8 @@ fun ProfileScreen( navigateBack: () -> Unit,
                     }
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // Favorites Section
                 Row(
                     modifier = Modifier
@@ -266,11 +269,10 @@ fun FavoritesCard(
     favoritePlace: Favorite,
     viewModel: ProfileViewModel
 ){
-
-    val apiKey = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
-    val photoRefernce = favoritePlace.placePhotoReference
+    val apiKey = AppConfig.API_KEY
+    val photoReference = favoritePlace.placePhotoReference
     // Build the URL for the photo
-    val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoRefernce&key=$apiKey"
+    val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
 
     Card{
         Row(verticalAlignment = Alignment.CenterVertically

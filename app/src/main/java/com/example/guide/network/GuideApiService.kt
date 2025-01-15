@@ -1,5 +1,6 @@
 package com.example.guide.network
 
+import com.example.guide.AppConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -24,7 +25,7 @@ interface GuideApiService {
     @GET("maps/api/place/textsearch/json")
     suspend fun findPlaceFromText(
         @Query("query") query: String,
-        @Query("key") apiKey: String = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+        @Query("key") apiKey: String = AppConfig.API_KEY
     ): Response<PlacesResponse>
 }
 
