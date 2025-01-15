@@ -20,19 +20,17 @@ import androidx.room.PrimaryKey
         )])
 data class Favorite(
     @ColumnInfo(name = "place_id")
-    val place_id: String,
+    val placeId: String,
     @ColumnInfo(name = "user_id", index = true)
-    val user_id: Int,
+    val userId: Int,
     @ColumnInfo(name = "place_name")
-    val place_name: String,
+    val placeName: String,
     @ColumnInfo(name = "place_address")
-    val place_address: String,
+    val placeAddress: String,
     @ColumnInfo(name = "place_rating")
-    val place_rating: Double,
+    val placeRating: Double,
     @ColumnInfo(name = "place_photo_reference")
-    val place_photo_reference: String,
+    val placePhotoReference: String,
     @ColumnInfo(name = "place_type")
-    val place_type: String
-
-
+    val placeType: String
 )

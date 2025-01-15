@@ -147,7 +147,7 @@ fun GuideNavHost(
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             val profileViewModel: ProfileViewModel = viewModel(
-                factory = ProfileViewModelFactory(userId, userRepository)
+                factory = ProfileViewModelFactory(userId, userRepository, favoritesRepository)
             )
             ProfileScreen(
                 navigateBack = { navController.navigateUp() },

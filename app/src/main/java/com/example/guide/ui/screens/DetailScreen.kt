@@ -26,14 +26,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshots.toInt
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.dp
@@ -43,7 +41,6 @@ import com.example.guide.network.Place
 import com.example.guide.network.Review
 import com.example.guide.ui.navigation.NavigationDestination
 import java.util.Locale
-
 
 object DetailsDestination : NavigationDestination {
     override val route = "details"
@@ -89,9 +86,9 @@ fun DetailsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Place Photo (using Coil)
+            // Place Photo
             AsyncImage(
-                model = photoUrl, // Assuming you have a getPhotoUrl() extension function for Place
+                model = photoUrl,
                 contentDescription = place.name,
                 modifier = Modifier
                     .fillMaxWidth()

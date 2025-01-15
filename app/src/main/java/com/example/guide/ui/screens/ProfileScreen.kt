@@ -7,15 +7,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -40,6 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -49,8 +61,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import com.example.guide.R
+import com.example.guide.data.FakeFavoritesRepository
 import com.example.guide.data.FakeUsersRepository
+import com.example.guide.data.Favorite
 import com.example.guide.ui.navigation.NavigationDestination
+import java.util.Locale
 
 object ProfileDestination : NavigationDestination {
     override val route = "profile"
@@ -62,48 +79,45 @@ fun ProfileScreen( navigateBack: () -> Unit,
                    viewModel: ProfileViewModel = viewModel()
 ) {
     var isAccountInfoExpanded by remember { mutableStateOf(false) }
+    var isFavoritesExpanded by remember { mutableStateOf(false) }
+    // Scroll state
+    val scrollState = rememberScrollState()
 
-    Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = "Hello, ${viewModel.username.value} !",
-                    style = TextStyle(
-                        color = Color(0xFF800080), // Purple color
-                        fontWeight = FontWeight.Bold, // Bold text
-                        fontSize = 26.sp // Optional: Change font size
-                    ),
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.TopStart)
+                    .verticalScroll(rememberScrollState()), // Align the content to the top
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "Hello, ${viewModel.username.value}!",
+                        style = TextStyle(
+                            color = Color(0xFF800080),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 26.sp
+                        ),
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 // Account Info Section
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable {
-                            isAccountInfoExpanded = !isAccountInfoExpanded
-                        }
-                        ,
+                        .clickable { isAccountInfoExpanded = !isAccountInfoExpanded },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -118,141 +132,216 @@ fun ProfileScreen( navigateBack: () -> Unit,
                 }
 
                 if (isAccountInfoExpanded) {
-                        // Display editable account info when expanded
-                        Column{
-                            OutlinedTextField(
-                                value = viewModel.username.value,
-                                onValueChange = { viewModel.onUsernameChange(it) },
-                                label = { Text("Username") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            OutlinedTextField(
-                                value = viewModel.email.value,
-                                onValueChange = { viewModel.onEmailChange(it) },
-                                label = { Text("Email") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            OutlinedTextField(
-                                value = viewModel.password.value,
-                                onValueChange = { viewModel.onPasswordChange(it) },
-                                label = { Text("Password") },
-                                visualTransformation = if (viewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                                trailingIcon = {
-                                    val icon =
-                                        if (viewModel.passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                                    IconButton(onClick = { viewModel.onPasswordVisibilityToggle() }) {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = "Toggle password visibility"
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Change Credentials Button
-                            Button(
-                                onClick = {
-                                    viewModel.onChangeClicked()
-                                    // Close the Account Info section
-                                    isAccountInfoExpanded = false
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text("Change Credentials")
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                }
-
-                if (viewModel.errorMessage.value.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth() // Box width adjusts to text width
-                            .padding(top = 8.dp)
-                            .background(Color.Red.copy(alpha = 0.1f)) // Red background with low opacity
-                            .clip(RoundedCornerShape(3.dp))
-                            .padding(8.dp) // Padding for the error text
-                    ) {
-                        Text(
-                            text = viewModel.errorMessage.value,
-                            color = Color.Red,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
-                }
-
-                if (viewModel.successMessage.value.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth() // Box width adjusts to text width
-                            .padding(top = 8.dp)
-                            .background(Color.Green.copy(alpha = 0.1f)) // Red background with low opacity
-                            .clip(RoundedCornerShape(3.dp))
-                            .padding(8.dp) // Padding for the error text
-                    ) {
-                        Text(
-                            text = viewModel.successMessage.value,
-                            color = Color.Green,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Favorites",
-                            modifier = Modifier.padding(bottom = 8.dp)
+                    Column {
+                        OutlinedTextField(
+                            value = viewModel.username.value,
+                            onValueChange = { viewModel.onUsernameChange(it) },
+                            label = { Text("Username") },
+                            modifier = Modifier.fillMaxWidth()
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        SwipeableCard()
+                        OutlinedTextField(
+                            value = viewModel.email.value,
+                            onValueChange = { viewModel.onEmailChange(it) },
+                            label = { Text("Email") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextField(
+                            value = viewModel.password.value,
+                            onValueChange = { viewModel.onPasswordChange(it) },
+                            label = { Text("Password") },
+                            visualTransformation = if (viewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                val icon = if (viewModel.passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                                IconButton(onClick = { viewModel.onPasswordVisibilityToggle() }) {
+                                    Icon(
+                                        imageVector = icon,
+                                        contentDescription = "Toggle password visibility"
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = {
+                                viewModel.onChangeClicked()
+                                isAccountInfoExpanded = false
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Change Credentials")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                // Favorites Section
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable { isFavoritesExpanded = !isFavoritesExpanded },
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Favorites",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Icon(
+                        imageVector = if (isFavoritesExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Toggle Favorites"
+                    )
+                }
 
+                if (isFavoritesExpanded) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 400.dp) // Restrict height to enable scrolling
+                        .padding(8.dp)
+                    ) {
+                        HorizontalPlaceCards(viewModel)
+                    }
+                }
             }
 
+            // Navigation Bar at the Bottom
             ProfileBottomNavigationBar(
                 navigateToMain,
                 navigateBack,
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier
+                    .align(Alignment.BottomCenter) // Align to the bottom of the screen
+                    .fillMaxWidth()
             )
+    }
+}
 
+@Composable
+fun HorizontalPlaceCards(viewModel: ProfileViewModel = viewModel()) {
+    val favoritesResults = viewModel.favoritesResults()
+    var currentPlaceIndex by remember { mutableStateOf(0) }
+
+    if (favoritesResults.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No favorite places available",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        // Show the Row with place cards
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Left Arrow
+            IconButton(
+                onClick = {
+                    if (currentPlaceIndex > 0) {
+                        currentPlaceIndex--
+                    }
+                }
+            ) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Place")
+            }
+
+            // PlaceCard
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxHeight()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                val favoritePlace = favoritesResults[currentPlaceIndex]
+                FavoritesCard(
+                    favoritePlace = favoritePlace,
+                    viewModel = viewModel
+                )
+            }
+
+            // Right Arrow
+            IconButton(
+                onClick = {
+                    if (currentPlaceIndex < favoritesResults.size - 1) {
+                        currentPlaceIndex++
+                    }
+                }
+            ) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next Place")
+            }
         }
     }
 }
 
 @Composable
-fun SwipeableCard() {
-    Box {
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(
+fun FavoritesCard(
+    favoritePlace: Favorite,
+    viewModel: ProfileViewModel
+){
+
+    val apiKey = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+    // Build the URL for the photo
+    val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$favoritePlace.placePhotoReference&key=$apiKey"
+
+    Card{
+        Row(verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = photoUrl,
+                contentDescription = favoritePlace.placeName,
+                error = painterResource(R.drawable.ic_broken_image),
+                placeholder = painterResource(R.drawable.loading_img),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(text = "item.name")
-                Text(text = "item.details")
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = favoritePlace.placeName,
+                    fontWeight = FontWeight.Bold
+                )
+                // Ensure that types have no underscores and capitalize the first letter
+                Text(
+                    text = favoritePlace.placeType
+                        ?.replace("_", " ")
+                        ?.replaceFirstChar { char ->
+                            if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString()
+                        }
+                        ?: "No type available"  // Fallback message
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Rating: ${favoritePlace.placeRating}")
+                Text(text = "Address: ${favoritePlace.placeAddress}")
+                Button(
+                    onClick = {
+                        viewModel.onRemoveFavorite(favoritePlace)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Remove from favorites"
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text ="Remove")
+                }
             }
         }
     }
@@ -315,9 +404,10 @@ fun ProfileBottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
-    val fakeRepository = FakeUsersRepository() //mock repo
+    val fakeUserRepository = FakeUsersRepository() //mock repo
+    val fakeFavoriteRepository = FakeFavoritesRepository()
     val userID = 5
-    val viewModel = ProfileViewModel(userID, fakeRepository)
+    val viewModel = ProfileViewModel(userID, fakeUserRepository, fakeFavoriteRepository)
 
     // Implementing mocked navigation functions for the preview
     val navigateToMain: () -> Unit = {

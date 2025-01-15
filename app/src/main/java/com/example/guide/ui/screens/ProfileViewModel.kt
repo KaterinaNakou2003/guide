@@ -1,15 +1,26 @@
 package com.example.guide.ui.screens
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.guide.data.Favorite
+import com.example.guide.data.FavoritesRepository
 import com.example.guide.data.UsersRepository
+import com.example.guide.network.Place
+import com.example.guide.network.PlacesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
+import java.io.IOException
 
 class ProfileViewModel(
     private val userID: Int,
-    private val userRepository: UsersRepository) : ViewModel() {
+    private val userRepository: UsersRepository,
+    val favoritesRepository: FavoritesRepository
+) : ViewModel() {
 
     val userId = mutableStateOf(userID)
 
@@ -71,4 +82,18 @@ class ProfileViewModel(
             }
         }
     }
+
+    @Composable
+    fun favoritesResults(): List<Favorite> {
+        // Collect the flow as state
+        val favoritesList = favoritesRepository.getAllUserFavoritesStream(userId.value).collectAsState(initial = emptyList())
+        return favoritesList.value
+    }
+
+    fun onRemoveFavorite(favorite: Favorite){
+        viewModelScope.launch {
+            favoritesRepository.deleteFavorite(favorite)
+        }
+    }
+
 }
