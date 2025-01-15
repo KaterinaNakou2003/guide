@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.guide.data.AppDataContainer
-import com.example.guide.network.Place
 import com.example.guide.ui.AppViewModelProvider
 import com.example.guide.ui.DetailsViewModelFactory
 import com.example.guide.ui.SearchResultsViewModelFactory

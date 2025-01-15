@@ -3,7 +3,6 @@ package com.example.guide.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.guide.data.FavoritesRepository
-import com.example.guide.network.Place
 import com.example.guide.ui.screens.DetailsViewModel
 import com.example.guide.ui.screens.SharedPlaceViewModel
 
