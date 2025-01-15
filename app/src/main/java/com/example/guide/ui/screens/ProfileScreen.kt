@@ -268,8 +268,9 @@ fun FavoritesCard(
 ){
 
     val apiKey = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+    val photoRefernce = favoritePlace.placePhotoReference
     // Build the URL for the photo
-    val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$favoritePlace.placePhotoReference&key=$apiKey"
+    val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoRefernce&key=$apiKey"
 
     Card{
         Row(verticalAlignment = Alignment.CenterVertically

@@ -11,12 +11,12 @@ interface AppContainer {
 }
 
 /**
- * [AppContainer] implementation that provides a. instance of [OfflinePlacesRepository]
+ * [AppContainer] implementation that provides a. instance of [OfflineFavoritesRepository]
  *  and b. instances of [OfflineUsersRepository]
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
-     * Implementation for [PlacesRepository]
+     * Implementation for [FavoritesRepository]
      */
     override val favoritesRepository: FavoritesRepository by lazy {
         OfflineFavoritesRepository(GuideDatabase.getDatabase(context).favoriteDao())
