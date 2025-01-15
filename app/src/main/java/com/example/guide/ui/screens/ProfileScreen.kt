@@ -1,13 +1,12 @@
 package com.example.guide.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,15 +14,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -39,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -80,16 +73,13 @@ fun ProfileScreen( navigateBack: () -> Unit,
 ) {
     var isAccountInfoExpanded by remember { mutableStateOf(false) }
     var isFavoritesExpanded by remember { mutableStateOf(false) }
-    // Scroll state
-    val scrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .align(Alignment.TopStart)
-                    .verticalScroll(rememberScrollState()), // Align the content to the top
+                    .align(Alignment.TopStart),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -244,51 +234,32 @@ fun HorizontalPlaceCards(viewModel: ProfileViewModel = viewModel()) {
             )
         }
     } else {
-        // Show the Row with place cards
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures { change, dragAmount ->
+                        change.consume() // Consume the gesture event
+                        if (dragAmount > 0 && currentPlaceIndex > 0) {
+                            // Swipe Right -> Previous
+                            currentPlaceIndex--
+                        } else if (dragAmount < 0 && currentPlaceIndex < favoritesResults.size - 1) {
+                            // Swipe Left -> Next
+                            currentPlaceIndex++
+                        }
+                    }
+                },
+            contentAlignment = Alignment.Center
         ) {
-            // Left Arrow
-            IconButton(
-                onClick = {
-                    if (currentPlaceIndex > 0) {
-                        currentPlaceIndex--
-                    }
-                }
-            ) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Place")
-            }
-
-            // PlaceCard
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxHeight()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                val favoritePlace = favoritesResults[currentPlaceIndex]
-                FavoritesCard(
-                    favoritePlace = favoritePlace,
-                    viewModel = viewModel
-                )
-            }
-
-            // Right Arrow
-            IconButton(
-                onClick = {
-                    if (currentPlaceIndex < favoritesResults.size - 1) {
-                        currentPlaceIndex++
-                    }
-                }
-            ) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next Place")
-            }
+            FavoritesCard(
+                favoritePlace = favoritesResults[currentPlaceIndex],
+                viewModel = viewModel
+            )
         }
     }
 }
+
 
 @Composable
 fun FavoritesCard(
@@ -325,7 +296,7 @@ fun FavoritesCard(
                         ?.replaceFirstChar { char ->
                             if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString()
                         }
-                        ?: "No type available"  // Fallback message
+                        ?: "No type available"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Rating: ${favoritePlace.placeRating}")
