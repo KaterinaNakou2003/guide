@@ -20,11 +20,9 @@ interface FavoriteDao {
     suspend fun delete(favorite: Favorite)
 
     @Query("SELECT * from favorites WHERE user_id = :userId and place_id = :placeId")
-    fun getFavorite(userId: Int, placeId: Int): Flow<Favorite>
+    fun getFavorite(userId: Int, placeId: String): Flow<Favorite>
 
     @Query("SELECT * from favorites WHERE user_id = :id ORDER BY place_id ASC")
     fun getAllUserFavorites(id: Int): Flow<List<Favorite>>
 
-    @Query("SELECT * from favorites ORDER BY place_id ASC")
-    fun getAllFavorites(): Flow<List<Favorite>>
 }

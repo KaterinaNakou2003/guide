@@ -7,11 +7,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface FavoritesRepository {
     /**
-     * Retrieve all the favorites from the the given data source.
-     */
-    fun getAllFavoritesStream(): Flow<List<Favorite>>
-
-    /**
      * Retrieve all the favorites of a user from the the given data source that matches with the [userId].
      */
     fun getAllUserFavoritesStream(id: Int): Flow<List<Favorite>>
@@ -19,7 +14,7 @@ interface FavoritesRepository {
     /**
      * Retrieve a favorite of a user from the given data source that matches with [userId] and [placeId].
      */
-    fun getFavoriteStream(userId: Int, placeId: Int): Flow<Favorite?>
+    fun getFavoriteStream(userId: Int, placeId: String): Flow<Favorite?>
 
     /**
      * Insert favorite place in the data source

@@ -155,6 +155,7 @@ fun SearchResultsScreenPreview() {
         navigateToProfile,
         navigateToSearch,
         onPlaceClick = {},
-        viewModel)
+        viewModel
+    )
 
 }

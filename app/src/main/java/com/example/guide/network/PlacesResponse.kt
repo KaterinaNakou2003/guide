@@ -36,6 +36,21 @@ data class PlusCode(
     @SerialName("global_code")val globalCode: String
 )
 
+
+@Serializable
+data class Review(
+    @SerialName("author_name")val authorName: String,
+    @SerialName("rating")val rating: Int,
+    @SerialName("relative_time_description")val relativeTimeDescription: String,
+    @SerialName("text")val text: String,
+    @SerialName("time")val time: Int,
+    @SerialName("translated")val translated: Boolean,
+    @SerialName("profile_photo_url")val profilePhotoUrl: String,
+    @SerialName("author_url")val authorUrl: String,
+    @SerialName("language")val language: String,
+    @SerialName("original_language")val originalLanguage: String
+)
+
 @Serializable
 data class Result(
     @SerialName("business_status")val businessStatus: String,
@@ -50,13 +65,15 @@ data class Result(
     @SerialName("price_level")val priceLevel: Int? = null,
     @SerialName("rating")val rating: Double? = null,
     @SerialName("types")val types: List<String>,
-    @SerialName("user_ratings_total")val userRatingsTotal: Int? = null
+    @SerialName("user_ratings_total")val userRatingsTotal: Int? = null,
+    @SerialName("reviews")val reviews: List<Review>? = null
 )
 
 @Serializable
 data class OpeningHours(
     @SerialName("open_now")val openNow: Boolean
 )
+
 
 @Serializable
 data class Place(
@@ -65,7 +82,8 @@ data class Place(
     @SerialName("name") val name: String,
     @SerialName("photo") val photos: List<Photo>?,
     @SerialName("rating") val rating: Double,
-    @SerialName("types") val types: List<String>
+    @SerialName("types") val types: List<String>,
+    @SerialName("reviews")val reviews: List<Review>? = null
 )
 
 @Serializable
@@ -81,6 +99,7 @@ data class PlacesResponse(
             name = it.name,
             photos = it.photos,
             types = it.types,
+            reviews = it.reviews,
             rating = it.rating ?: 0.0 // Provide default rating if null
         )
     }

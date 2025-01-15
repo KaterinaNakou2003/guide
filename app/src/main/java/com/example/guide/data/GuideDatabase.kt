@@ -5,10 +5,11 @@ import android.content.Context
 import androidx.room.RoomDatabase
 import androidx.room.Room
 
+
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [User::class, Favorite::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, Favorite::class], version = 3, exportSchema = false)
 abstract class GuideDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
@@ -24,6 +25,7 @@ abstract class GuideDatabase : RoomDatabase() {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, GuideDatabase::class.java, "guide_database")
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }
