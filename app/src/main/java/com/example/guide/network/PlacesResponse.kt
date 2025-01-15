@@ -83,7 +83,7 @@ data class Place(
     @SerialName("photo") val photos: List<Photo>?,
     @SerialName("rating") val rating: Double,
     @SerialName("types") val types: List<String>,
-    @SerialName("reviews")val reviews: List<Review>? = null
+    @SerialName("reviews")val reviews: List<Review>?
 )
 
 @Serializable

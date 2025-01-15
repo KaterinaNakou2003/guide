@@ -240,7 +240,6 @@ fun HorizontalPlaceCards(viewModel: ProfileViewModel = viewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures { change, dragAmount ->
                         change.consume() // Consume the gesture event
@@ -275,7 +274,9 @@ fun FavoritesCard(
     val photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
 
     Card{
-        Row(verticalAlignment = Alignment.CenterVertically
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.padding(8.dp)
         ) {
             AsyncImage(
                 model = photoUrl,
@@ -285,7 +286,8 @@ fun FavoritesCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(4.dp))
+                    .padding(end = 8.dp)
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
