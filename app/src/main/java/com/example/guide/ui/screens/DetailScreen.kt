@@ -154,6 +154,7 @@ fun ReviewsSection(place: Place) {
         } else {
             LazyColumn() {
                 items(place.reviews) {
+                    ReviewCard(it)
                 }
             }
 
