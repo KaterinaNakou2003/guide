@@ -243,10 +243,10 @@ fun HorizontalPlaceCards(viewModel: ProfileViewModel = viewModel()) {
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures { change, dragAmount ->
                         change.consume() // Consume the gesture event
-                        if (dragAmount > 0 && currentPlaceIndex > 0) {
+                        if (dragAmount > 100 && currentPlaceIndex > 0) {
                             // Swipe Right -> Previous
                             currentPlaceIndex--
-                        } else if (dragAmount < 0 && currentPlaceIndex < favoritesResults.size - 1) {
+                        } else if (dragAmount < -100 && currentPlaceIndex < favoritesResults.size - 1) {
                             // Swipe Left -> Next
                             currentPlaceIndex++
                         }
