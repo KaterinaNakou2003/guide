@@ -1,5 +1,5 @@
 package com.example.guide
 
 object AppConfig {
-    const val API_KEY = "AIzaSyD5brYYjEkNJOMyM18smT_grgDwuCddHQQ"
+    const val API_KEY = "Your Api Key"
 }
