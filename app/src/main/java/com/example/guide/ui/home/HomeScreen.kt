@@ -52,7 +52,7 @@ private fun HomeBody(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Welcome to the App",
+            text = "Welcome to PlaceSpotter",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 32.dp)
         )

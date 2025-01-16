@@ -24,31 +24,3 @@ import com.example.guide.ui.navigation.GuideNavHost
 fun GuideApp(navController: NavHostController = rememberNavController()) {
     GuideNavHost(navController = navController)
 }
-
-/**
- * App bar to display title and conditionally display the back navigation.
- */
-@Composable
-fun GuideTopAppBar(
-    title: String,
-    canNavigateBack: Boolean,
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateUp: () -> Unit = {}
-) {
-    CenterAlignedTopAppBar(
-        title = { Text(title) },
-        modifier = modifier,
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
-            }
-        }
-    )
-}
